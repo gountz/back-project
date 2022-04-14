@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
+import { v4 } from 'uuid';
 import AuthMiddleware from '../../middlewares/auth.middleware';
 import Controller from '../../models/interface/controllers.interface';
 
@@ -42,9 +43,17 @@ export default class UserController
       image:
         'https://w7.pngwing.com/pngs/505/824/png-transparent-logo-drawing-lion-lion-illustration-vertebrate-flower-fictional-character.png',
     };
+    const code = v4();
     const query = {
-      text: 'INSERT INTO users(email, username, password, bio, image) VALUES($1, $2, $3, $4, $5);',
-      values: [email, username, await bcrypt.hash(password, 10), bio, image],
+      text: 'INSERT INTO users(email, username, password, bio, image, code) VALUES($1, $2, $3, $4, $5, $6);',
+      values: [
+        email,
+        username,
+        await bcrypt.hash(password, 10),
+        bio,
+        image,
+        code,
+      ],
     };
     await this.db
       .query(query)
